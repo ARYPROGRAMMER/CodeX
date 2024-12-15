@@ -49,5 +49,17 @@ export const useCodeEditorState = create<CodeEditorState>((set, get) => {
       localStorage.setItem("editor-font-size", fontSize.toString());
       set({ fontSize });
     },
+
+    setLanguage: (language: string)=>{
+      const currentCode = get().editor?.getValue();
+      if (currentCode) {
+        localStorage.setItem(`editor-code-${get().language}`, currentCode);
+      }
+      set({
+        language,
+        output:"",
+        error:null,
+      });
+    }
   };
 });

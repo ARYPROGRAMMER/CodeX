@@ -31,6 +31,7 @@ export const useCodeEditorState = create<CodeEditorState>((set, get) => {
     output: "",
     isRunning: false,
     error: null,
+    editor: null,
     executionResult: null,
 
     getCode: () => get().editor.getValue() || "",
@@ -55,11 +56,18 @@ export const useCodeEditorState = create<CodeEditorState>((set, get) => {
       if (currentCode) {
         localStorage.setItem(`editor-code-${get().language}`, currentCode);
       }
+      localStorage.setItem("editor-language", language);
       set({
         language,
         output:"",
         error:null,
       });
-    }
+    },
+    runCode: async () => {
+
+      //TODO : Implement code execution
+
+    },
+
   };
 });

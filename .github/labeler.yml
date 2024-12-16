@@ -1,0 +1,48 @@
+# .github/labeler.yml
+
+# Label PRs that modify TypeScript files
+typescript:
+  - "**/*.ts"
+  - "**/*.tsx"
+
+# Label PRs that modify JavaScript files
+javascript:
+  - "**/*.js"
+  - "**/*.jsx"
+
+# Label PRs that modify SCSS or CSS files
+styles:
+  - "**/*.css"
+  - "**/*.scss"
+
+# Label PRs that modify API routes
+api:
+  - "pages/api/**/*"
+
+# Label PRs that modify public assets
+assets:
+  - "public/**/*"
+
+# Label PRs that modify configuration files
+config:
+  - "next.config.js"
+  - "tsconfig.json"
+  - ".eslintrc.js"
+  - ".prettierrc"
+  - ".env*"
+
+# Label PRs that modify documentation
+documentation:
+  - "**/*.md"
+  - "**/*.mdx"
+
+# Label PRs that modify CI/CD workflows
+ci:
+  - ".github/workflows/**/*"
+
+# Label PRs that modify test files
+tests:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"

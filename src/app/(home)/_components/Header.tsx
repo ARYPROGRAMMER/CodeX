@@ -37,10 +37,10 @@ async function Header() {
 
             {/* Logo */}
             <div
-              className="bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0f] p-2 ring-1
+              className="bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0f] p-1 ring-1
             ring-white/10 group-hover:ring-white/20 transition-all"
             >
-              <Image src={"/logo.png"} width={40} height={40} alt="CodeX Logo" />
+              <Image src={"/logo.png"} width={60} height={60} alt="CodeX Logo" />
             </div>
 
             <div className="flex flex-col">

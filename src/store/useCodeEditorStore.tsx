@@ -148,3 +148,6 @@ export const useCodeEditorState = create<CodeEditorState>((set, get) => {
     },
   };
 });
+
+
+export const getExecutionResult = () => useCodeEditorState.getState().executionResult;

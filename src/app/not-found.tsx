@@ -46,10 +46,9 @@ const NotFound = () => {
             Under Maintenance
           </h2>
 
-          {/* Description */}
           <div className="mb-8 space-y-4 text-purple-100/80">
             <p className="text-lg">
-              We're currently optimizing this section of CodeX to bring you an even better coding experience.
+              We&apos;re currently optimizing this section of CodeX to bring you an even better coding experience.
             </p>
             <div className="flex items-center justify-center gap-2 text-yellow-400">
               <Server className="w-5 h-5 animate-pulse" />
@@ -57,7 +56,7 @@ const NotFound = () => {
             </div>
           </div>
 
-          {/* Back to Home Button */}
+     
           <Link
             href="/"
             className="group inline-flex items-center gap-2 px-6 py-3 text-lg bg-purple-600 hover:bg-purple-500 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25"

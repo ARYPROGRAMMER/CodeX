@@ -7,7 +7,6 @@ import {
   Users,
   ArrowRight,
   Terminal,
-  Globe,
   GitBranch,
   Star,
 } from "lucide-react";
@@ -33,7 +32,7 @@ const HomePage = () => {
     window.addEventListener("resize", setCanvasSize);
 
     
-    let lines = [];
+    const lines: { x: number; y: number; length: number; angle: number; speed: number; originalSpeed: number; thickness: number; }[] = [];
     for (let i = 0; i < 15; i++) {
       
       lines.push({
@@ -104,6 +103,7 @@ const HomePage = () => {
 
     animate();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleMouseMove = (e: { clientX: any; clientY: any }) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
@@ -126,16 +126,16 @@ const HomePage = () => {
         className="absolute inset-0 w-full h-full"
         style={{ opacity: 0.9 }} 
       />
-      {/* Navigation */}
+
       <Header />
-      {/* Hero Section */}
+
       <section className="relative pt-32 pb-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-6xl md:text-8xl font-bold mb-8">
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
               I Built CodeX
             </span>
-            <span className="block text-white mt-2">Because I Can't Code</span>
+            <span className="block text-white mt-2">Because I Can&apos;t Code</span>
           </h1>
           <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
             Join a global community of competitive programmers. Practice,

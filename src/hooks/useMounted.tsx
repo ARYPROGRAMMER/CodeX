@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use } from "react";
+import React from "react";
 
 function useMounted() {
   const [mounted, setMounted] = React.useState(false);

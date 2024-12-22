@@ -1,32 +1,54 @@
-"use client";
-
-import { useCodeEditorState } from "@/store/useCodeEditorStore";
-import React from "react";
-import { defineMonacoThemes, LANGUAGE_CONFIG } from "../_constants";
-import { RotateCcwIcon, ShareIcon, TypeIcon } from "lucide-react";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useCodeEditorState } from "@/store/useCodeEditorStore";
+import { defineMonacoThemes, LANGUAGE_CONFIG } from "../_constants";
 import { Editor } from "@monaco-editor/react";
-import { useClerk } from "@clerk/nextjs";
-import { EditorPanelSkeleton, EditorViewSkeleton } from "./EditorPanelLoading";
+import { SignedIn, useClerk } from "@clerk/nextjs";
+import Image from "next/image";
+import { EditorPanelSkeleton } from "./EditorPanelLoading";
 import useMounted from "@/hooks/useMounted";
 import ShareSnippetDialog from "./ShareSnippetDialog";
+import {
+  RotateCcwIcon,
+  ShareIcon,
+  TypeIcon,
+  DownloadIcon,
+  UploadIcon,
+  FileIcon,
+  SettingsIcon,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { toast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import RunButton from "./RunButton";
 
 function EditorPanel() {
   const clerk = useClerk();
-
-  const [isShareDialogOpen, setIsShareDialogOpen] = React.useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const { language, theme, fontSize, editor, setFontSize, setEditor } =
     useCodeEditorState();
   const mounted = useMounted();
+  const [status, setStatus] = useState<
+    "ready" | "running" | "passed" | "failed"
+  >("ready");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
     const newCode = savedCode || LANGUAGE_CONFIG[language].defaultCode;
     if (editor) editor.setValue(newCode);
   }, [language, editor]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const savedFontSize = localStorage.getItem("editor-font-size");
     if (savedFontSize) setFontSize(parseInt(savedFontSize));
   }, [setFontSize]);
@@ -35,126 +57,217 @@ function EditorPanel() {
     const defaultCode = LANGUAGE_CONFIG[language].defaultCode;
     if (editor) editor.setValue(defaultCode);
     localStorage.removeItem(`editor-code-${language}`);
+    toast({
+      title: "Code Reset",
+      description: "Your code has been reset to the default.",
+      duration: 3000,
+    });
   };
-  const handleEditorChange = (value:string | undefined) => {
+
+  const handleEditorChange = (value: string | undefined) => {
     if (value) localStorage.setItem(`editor-code-${language}`, value);
-
   };
 
-
-  const handleFontSizeChange = (newSize: number) => {
-    const size = Math.min(24, Math.max(12, newSize));
+  const handleFontSizeChange = (newSize: number[]) => {
+    const size = Math.min(24, Math.max(12, newSize[0]));
     setFontSize(size);
     localStorage.setItem("editor-font-size", size.toString());
   };
 
   if (!mounted) return null;
+
+  const statusColors = {
+    ready: "bg-gray-500",
+    running: "bg-yellow-500 animate-pulse",
+    passed: "bg-green-500",
+    failed: "bg-red-500",
+  };
+
+  const statusText = {
+    ready: "Ready",
+    running: "Running...",
+    passed: "Passed",
+    failed: "Failed",
+  };
+
   return (
-    <div className="relativ">
-      <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#1e1e2e] ring-1 ring-white/5">
-              <Image
-                src={"/" + language + ".png"}
-                alt="Logo"
-                width={24}
-                height={24}
-              />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col h-full gap-4"
+    >
+      <Card className="border-gray-700 bg-gray-800">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600">
+                <Image
+                  src={"/" + language + ".png"}
+                  alt="Language Logo"
+                  width={28}
+                  height={28}
+                />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-white">
+                  Problem Solution
+                </h2>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs">
+                    {language.toUpperCase()}
+                  </Badge>
+                  <Badge className={`text-xs ${statusColors[status]}`}>
+                    {statusText[status]}
+                  </Badge>
+                </div>
+              </div>
             </div>
-            <div>
-              <h2 className="text-sm font-medium text-white">
-                Write and execute your code
-              </h2>
-              <p className="text-xs text-gray-500">
-                Contact immediately if you have any issues
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 px-3 py-2 bg-[#1e1e2e] rounded-lg ring-1 ring-white/5">
-              <TypeIcon className="size-4 text-gray-400" />
-              <div className="flex items-center gap-3">
-                <input
-                  type="range"
-                  min="12"
-                  max="24"
-                  value={fontSize}
-                  onChange={(e) =>
-                    handleFontSizeChange(parseInt(e.target.value))
-                  }
-                  className="w-20 h-1 bg-gray-600 rounded-lg cursor-pointer"
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-2 bg-gray-700 rounded-lg">
+                <TypeIcon className="w-4 h-4 text-gray-400" />
+                <Slider
+                  min={12}
+                  max={24}
+                  step={1}
+                  value={[fontSize]}
+                  onValueChange={handleFontSizeChange}
+                  className="w-24"
                 />
                 <span className="text-sm font-medium text-gray-400 min-w-[2rem] text-center">
                   {fontSize}
                 </span>
               </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon" className="bg-gray-700">
+                    <SettingsIcon className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-gray-800 border-gray-700"
+                >
+                  <DropdownMenuItem>
+                    <FileIcon className="w-4 h-4 mr-2" />
+                    New File
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <UploadIcon className="w-4 h-4 mr-2" />
+                    Upload File
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <DownloadIcon className="w-4 h-4 mr-2" />
+                    Download
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleRefresh}
+                className="bg-gray-700"
+              >
+                <RotateCcwIcon className="w-4 h-4" />
+              </Button>
+
+              <Button
+                onClick={() => setIsShareDialogOpen(true)}
+                variant="outline"
+                className="bg-gray-700"
+              >
+                <ShareIcon className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+
+              <SignedIn>
+                <motion.div
+                  key="run-button"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  whileHover={{ y: -2 }}
+                >
+                  <RunButton
+                    onStatusChange={(newStatus) => {
+                      switch (newStatus) {
+                        case "error":
+                          setStatus("failed");
+                          break;
+                        case "success":
+                          setStatus("passed");
+                          break;
+                        case "running":
+                          setStatus("running");
+                          break;
+                        default:
+                          setStatus("ready");
+                      }
+                    }}
+                  />
+                </motion.div>
+              </SignedIn>
             </div>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleRefresh}
-              className="p-2 bg-[#1e1e2e] hover:bg-[#2a2a3a] rounded-lg ring-1 ring-white/5 transition-colors"
-              aria-label="Reset to default code"
-            >
-              <RotateCcwIcon className="size-4 text-gray-400" />
-            </motion.button>
-
-            {/* Share Button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setIsShareDialogOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg overflow-hidden bg-gradient-to-r
-               from-blue-500 to-blue-600 opacity-90 hover:opacity-100 transition-opacity"
-            >
-              <ShareIcon className="size-4 text-white" />
-              <span className="text-sm font-medium text-white ">Share</span>
-            </motion.button>
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* editor */}
-        <div className="relative group roundex-xl overflow-hidden ring-1 ring-white/[0.05]">
-          {clerk.loaded && (
-            <Editor
-              height="600px"
-              language={LANGUAGE_CONFIG[language].monacoLanguage}
-              onChange={handleEditorChange}
-              theme={theme}
-              beforeMount={defineMonacoThemes}
-              onMount={(editor) => setEditor(editor)}
-              options={{
-                minimap: { enabled: true },
-                fontSize: fontSize,
-                automaticLayout: true,
-                scrollBeyondLastLine: false,
-                padding: { top: 16, bottom: 16 },
-                renderWhitespace: "selection",
-                fontFamily: '"Fira Code", "Cascadia Code", Consolas, monospace',
-                fontLigatures: true,
-                cursorBlinking: "smooth",
-                smoothScrolling: true,
-                contextmenu: true,
-                renderLineHighlight: "all",
-                lineHeight: 1.6,
-                letterSpacing: 0.5,
-                wordWrap: "on",
-                roundedSelection: true,
-                scrollbar: {
-                  verticalScrollbarSize: 8,
-                  horizontalScrollbarSize: 8,
-                },
-              }}
-            />
-          )}
+      <Card className="flex-1 border-gray-700 bg-gray-800 overflow-hidden">
+        <Tabs defaultValue="editor" className="h-full">
+          <TabsList className="bg-gray-900 border-b border-gray-700 p-0 h-10">
+            <TabsTrigger
+              value="editor"
+              className="data-[state=active]:bg-gray-800 rounded-none border-r border-gray-700 h-full"
+            >
+              Code
+            </TabsTrigger>
+            <TabsTrigger
+              value="input"
+              className="data-[state=active]:bg-gray-800 rounded-none border-r border-gray-700 h-full"
+            >
+              Input
+            </TabsTrigger>
+          </TabsList>
 
-          {!clerk.loaded && <EditorPanelSkeleton />}
-        </div>
-      </div>
-      {isShareDialogOpen && <ShareSnippetDialog onClose={() => setIsShareDialogOpen(false)} />}
-    </div>
+          <div className="h-[calc(100%-2.5rem)]">
+            {clerk.loaded ? (
+              <Editor
+                height="100%"
+                language={LANGUAGE_CONFIG[language].monacoLanguage}
+                theme={theme}
+                onChange={handleEditorChange}
+                beforeMount={defineMonacoThemes}
+                onMount={(editor) => setEditor(editor)}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: fontSize,
+                  fontFamily: '"Fira Code", monospace',
+                  fontLigatures: true,
+                  cursorBlinking: "smooth",
+                  smoothScrolling: true,
+                  contextmenu: true,
+                  lineNumbers: "on",
+                  renderLineHighlight: "all",
+                  scrollbar: {
+                    verticalScrollbarSize: 8,
+                    horizontalScrollbarSize: 8,
+                  },
+                }}
+              />
+            ) : (
+              <EditorPanelSkeleton />
+            )}
+          </div>
+        </Tabs>
+      </Card>
+
+      {isShareDialogOpen && (
+        <ShareSnippetDialog onClose={() => setIsShareDialogOpen(false)} />
+      )}
+    </motion.div>
   );
 }
 

@@ -1,5 +1,7 @@
 # CodeX
 
+### This project is licensed under the terms of GPL 3.0 License [LICENSE](LICENSE).
+
 ## Update: 1.0.0
 docker-compose up --build : to build the project
 contact me to get the env file for the project

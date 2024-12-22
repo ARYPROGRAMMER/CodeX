@@ -12,13 +12,10 @@ import {
   RotateCcwIcon,
   ShareIcon,
   TypeIcon,
-  PlayIcon,
   DownloadIcon,
   UploadIcon,
   FileIcon,
   SettingsIcon,
-  CheckIcon,
-  ClockIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -38,7 +35,6 @@ import RunButton from "./RunButton";
 function EditorPanel() {
   const clerk = useClerk();
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("editor");
   const { language, theme, fontSize, editor, setFontSize, setEditor } =
     useCodeEditorState();
   const mounted = useMounted();
@@ -76,14 +72,6 @@ function EditorPanel() {
     const size = Math.min(24, Math.max(12, newSize[0]));
     setFontSize(size);
     localStorage.setItem("editor-font-size", size.toString());
-  };
-
-  const handleRunCode = () => {
-    setStatus("running");
-    // Simulate code execution
-    setTimeout(() => {
-      setStatus(Math.random() > 0.5 ? "passed" : "failed");
-    }, 2000);
   };
 
   if (!mounted) return null;

@@ -59,6 +59,7 @@ const glowAnimation = {
 }
 
 function Header() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [convexUser, setConvexUser] = useState<any>(null)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)

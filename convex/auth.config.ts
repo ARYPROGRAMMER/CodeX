@@ -1,4 +1,4 @@
-export default {
+const val = {
   providers: [
     {
       domain: "https://enjoyed-mako-8.clerk.accounts.dev",
@@ -6,3 +6,6 @@ export default {
     },
   ],
 };
+
+
+export default val;

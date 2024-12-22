@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import EditorPanel from "./_components/EditorPanel"
 import Header from "./_components/Header"
 import OutputPanel from "./_components/OutputPanel"

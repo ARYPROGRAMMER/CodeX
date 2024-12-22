@@ -23,6 +23,7 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const metadata: Metadata = {
   title: "CodeCraft - Online Code Editor",
   description: "A modern, collaborative code editor platform",

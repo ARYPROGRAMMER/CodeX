@@ -30,14 +30,8 @@ http.route({
         });
 
         if (success) {
-         
-
-
-
-
-
-
-          
+         //redirect to success page
+         console.log("Upgrade to Pro successful");
         }
       }
 

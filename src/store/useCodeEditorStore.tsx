@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { LANGUAGE_CONFIG } from "@/app/(home)/_constants";
+import { LANGUAGE_CONFIG } from "@/app/home/_constants";
 import { Monaco } from "@monaco-editor/react";
 import { CodeEditorState } from "@/types";
 
@@ -148,5 +148,5 @@ export const useCodeEditorState = create<CodeEditorState>((set, get) => {
   };
 });
 
-
-export const getExecutionResult = () => useCodeEditorState.getState().executionResult;
+export const getExecutionResult = () =>
+  useCodeEditorState.getState().executionResult;

@@ -14,7 +14,7 @@ import HeaderProfileBtn from "./HeaderProfileBtn"
 import { Button } from "@/components/ui/button"
 
 const navItems = [
-  { id: 'challenges', href: "/challenges", icon: Code2, text: "Challenges" },
+  { id: 'editor', href: "/home", icon: Code2, text: "Code Editor" },
   { id: 'snippets', href: "/snippets", icon: FileCode2, text: "Snippets" },
   { id: 'leaderboard', href: "/leaderboard", icon: Trophy, text: "Leaderboard" },
   { id: 'theme', component: ThemeSelector },

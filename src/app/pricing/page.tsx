@@ -30,8 +30,6 @@ async function PricingPage() {
   >
     <NavigationHeader />
 
-    {/* main content */}
-
     <main className="relative pt-32 pb-24 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Hero   */}
@@ -124,8 +122,6 @@ async function PricingPage() {
                   ))}
                 </FeatureCategory>
               </div>
-
-              {/* CTA */}
               <div className="flex justify-center">
                 <SignedIn>
                   <UpgradeButton />

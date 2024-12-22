@@ -6,6 +6,51 @@ import { api, internal } from "./_generated/api";
 const http = httpRouter();
 
 http.route({
+  path: "/lemon-squeezy-webhook",
+  method: "POST",
+  handler: httpAction(async (ctx, req) => {
+    const payloadString = await req.json();
+    const signature = req.headers.get("X-Signature");
+    if (!signature) {
+      return new Response("Missing signature", { status: 400 });
+    }
+    try {
+      const payload = await ctx.runAction(internal.lemonSqueezy.verifyWebhook, {
+        payload: payloadString,
+        signature,
+      });
+
+      if (payload.meta.event_name === "order.created") {
+        const { data } = payload;
+        const {success} = await ctx.runMutation(api.users.upgradePro,{
+          email: data.attributes.use_email,
+          lemonSqueezyCustomerId: data.attributes.customer_id.toString(),
+          lemonSqueezyOrderId: data.id,
+          amount: data.attributes.total,
+        });
+
+        if (success) {
+         
+
+
+
+
+
+
+          
+        }
+      }
+
+      return new Response("Webhook processed successfully", { status: 200 });
+     
+    } catch (e) {
+      console.log("Webhook error:", e);
+      return new Response("Error processing webhook", { status: 500 });
+    }
+  }),
+});
+
+http.route({
   path: "/clerk-webhook",
   method: "POST",
   handler: httpAction(async (context, request) => {
@@ -59,9 +104,7 @@ http.route({
       }
     }
     return new Response("Webhook processed successfully", { status: 200 });
-
   }),
 });
-
 
 export default http;

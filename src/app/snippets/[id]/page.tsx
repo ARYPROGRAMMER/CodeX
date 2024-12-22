@@ -1,31 +1,34 @@
 "use client";
 
-import { useQuery } from 'convex/react';
-import { useParams } from 'next/navigation';
-import React from 'react'
-import { api } from '../../../../convex/_generated/api';
-import { Id } from '../../../../convex/_generated/dataModel';
-import SnippetDetailPageSkeleton from './_components/SnippetDetailPageSkeleton';
-import NavigationHeader from '@/components/ui/NavigationHeader';
-import { Clock, Code, MessageSquare, User } from 'lucide-react';
-import { Editor } from '@monaco-editor/react';
-import { defineMonacoThemes, LANGUAGE_CONFIG } from '@/app/(home)/_constants';
-import CopyButton from './_components/CopyButton';
-import Comments from './_components/Comments';
+import { useQuery } from "convex/react";
+import { useParams } from "next/navigation";
+import React from "react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import SnippetDetailPageSkeleton from "./_components/SnippetDetailPageSkeleton";
+import NavigationHeader from "@/components/ui/NavigationHeader";
+import { Clock, Code, MessageSquare, User } from "lucide-react";
+import { Editor } from "@monaco-editor/react";
+import { defineMonacoThemes, LANGUAGE_CONFIG } from "@/app/home/_constants";
+import CopyButton from "./_components/CopyButton";
+import Comments from "./_components/Comments";
 
 function SnippetDetailPage() {
   const snippetId = useParams().id;
 
-  const snippet = useQuery(api.snippets.getSnippetById, { snippetId : snippetId as Id<"snippets"> });
-  const comments = useQuery(api.snippets.getComments, { snippetId : snippetId as Id<"snippets"> });
-  
-    if (snippet === undefined) {
-        return <SnippetDetailPageSkeleton />;
-    }
+  const snippet = useQuery(api.snippets.getSnippetById, {
+    snippetId: snippetId as Id<"snippets">,
+  });
+  const comments = useQuery(api.snippets.getComments, {
+    snippetId: snippetId as Id<"snippets">,
+  });
 
+  if (snippet === undefined) {
+    return <SnippetDetailPageSkeleton />;
+  }
 
-    return (
-      <div className="min-h-screen bg-[#0a0a0f]">
+  return (
+    <div className="min-h-screen bg-[#0a0a0f]">
       <NavigationHeader />
 
       <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
@@ -52,7 +55,9 @@ function SnippetDetailPage() {
                     </div>
                     <div className="flex items-center gap-2 text-[#8b8b8d]">
                       <Clock className="w-4 h-4" />
-                      <span>{new Date(snippet._creationTime).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(snippet._creationTime).toLocaleDateString()}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2 text-[#8b8b8d]">
                       <MessageSquare className="w-4 h-4" />
@@ -100,7 +105,7 @@ function SnippetDetailPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default SnippetDetailPage
+export default SnippetDetailPage;

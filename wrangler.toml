@@ -1,3 +1,22 @@
-name = "codex"
-type = "javascript"
-build.command = "npm install --legacy-peer-deps && npm run build"
+main = ".open-next/worker.js"
+name = "codex-prod"
+
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Build configuration
+[build]
+command = "npm run build"
+[build.upload]
+format = "modules"
+
+# Assets configuration
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# KV configuration
+[[kv_namespaces]]
+binding = "CACHE"
+id = "<KV_NAMESPACE_ID>"
+preview_id = "<KV_PREVIEW_ID>"
